@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools>=70", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "telecom-platform"
+version = "1.0.0"
+description = "Telecom API Orchestration Platform"
+requires-python = ">=3.11"
+
+dependencies = [
+    # Web framework
+    "fastapi==0.115.5",
+    "uvicorn[standard]==0.34.0",
+    "gunicorn==23.0.0",
+
+    # Database — async stack
+    "sqlalchemy[asyncio]==2.0.36",
+    "asyncpg==0.30.0",
+    "alembic==1.14.0",
+
+    # Database — sync stack (Celery tasks only)
+    "psycopg2-binary==2.9.10",
+
+    # Validation and settings
+    "pydantic==2.10.3",
+    "pydantic-settings==2.7.0",
+
+    # Security
+    "python-jose[cryptography]==3.3.0",
+    "passlib[bcrypt]==1.7.4",
+
+    # Cache, rate limiting, Celery broker
+    "redis[hiredis]==5.2.1",
+
+    # Task queue
+    "celery[redis]==5.4.0",
+
+    # HTTP client (internal calls, test client)
+    "httpx==0.28.1",
+
+    # Telecom utilities
+    "phonenumbers==8.13.52",
+
+    # Logging
+    "python-json-logger==3.2.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.4",
+    "pytest-asyncio==0.24.0",
+    "pytest-cov==6.0.0",
+    "factory-boy==3.3.1",
+    "fakeredis==2.26.2",
+    "ruff==0.8.6",
+    "black==24.10.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]  # line length handled by black
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+python_classes = ["Test*"]
+
+[tool.coverage.run]
+source = ["app"]
+omit = ["app/domain/migrations/*", "*/__init__.py"]
