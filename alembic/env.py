@@ -9,13 +9,14 @@ from alembic import context
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.core.database import Base  # noqa: F401
+from app.domain.user import User  # noqa: F401
+from app.domain.application import ClientApplication  # noqa: F401
+from app.domain.api_key import ApiKey  # noqa: F401
+from app.domain.sms import SMSMessage  # noqa: F401
+from app.domain.ussd import USSDSession  # noqa: F401
+from app.domain.payment import PaymentTransaction  # noqa: F401
+from app.domain.audit import ApiCallLog  # noqa: F401
 from app.core.config import settings
-
-# Import all models so their tables are registered with Base.metadata
-# Add each new domain model import here:
-# from app.domain.user import User  # noqa: F401
-# from app.domain.application import ClientApplication  # noqa: F401
-# (We will add these in Phase 9)
 
 config = context.config
 
