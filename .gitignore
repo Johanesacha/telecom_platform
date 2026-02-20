@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+dist/
+build/
+*.egg-info/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Environment variables — NEVER commit these
+.env
+*.env
+
+# RSA keys — NEVER commit these
+*.pem
+*.key
+
+# PyCharm
+.idea/
+*.iml
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Alembic
+# Do NOT ignore alembic/versions — migration files must be committed
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
