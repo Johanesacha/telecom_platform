@@ -2,7 +2,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 from enum import StrEnum
-from sqlalchemy import Boolean, Enum, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, Enum, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
@@ -18,6 +18,17 @@ class SMSStatus(StrEnum):
 
 class SMSMessage(Base, TimestampMixin):
     __tablename__ = "sms_messages"
+    __table_args__ = (
+        # Composite index for history queries:
+        # - filter by application + status + date range
+        # - serves ORDER BY created_at DESC efficiently
+        Index(
+            "ix_sms_app_status_created",
+            "application_id",
+            "status",
+            "created_at",
+        ),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     application_id: Mapped[uuid.UUID] = mapped_column(
