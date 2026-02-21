@@ -3,11 +3,12 @@ import uuid
 from datetime import datetime
 from decimal import Decimal
 from enum import StrEnum
-from sqlalchemy import Boolean, Enum, ForeignKey, Numeric, String, Text
+from sqlalchemy import Boolean, Enum, ForeignKey, Index, Numeric, String, Text
 from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 from app.core.database import Base
 from app.domain.mixins import TimestampMixin
+
 
 class PaymentStatus(StrEnum):
     INITIATED = "INITIATED"
@@ -16,8 +17,18 @@ class PaymentStatus(StrEnum):
     FAILED    = "FAILED"
     REVERSED  = "REVERSED"
 
+
 class PaymentTransaction(Base, TimestampMixin):
     __tablename__ = "payment_transactions"
+    __table_args__ = (
+        Index(
+            "ix_payment_app_status_created",
+            "application_id",
+            "status",
+            "created_at",
+        ),
+    )
+
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     application_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("client_applications.id"), nullable=False, index=True)
     payer_msisdn: Mapped[str] = mapped_column(String(20), nullable=False)
