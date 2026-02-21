@@ -16,6 +16,8 @@ from app.domain.sms import SMSMessage  # noqa: F401
 from app.domain.ussd import USSDSession  # noqa: F401
 from app.domain.payment import PaymentTransaction  # noqa: F401
 from app.domain.audit import ApiCallLog  # noqa: F401
+from app.domain.notification import NotificationRecord  # noqa: F401
+from app.domain.number import NumberVerification        # noqa: F401
 from app.core.config import settings
 
 config = context.config
