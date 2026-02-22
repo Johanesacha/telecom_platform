@@ -140,8 +140,8 @@ async def logout(
     try:
         payload = pyjwt.decode(
             body.refresh_token,
-            settings.secret_key,
-            algorithms=[settings.algorithm],
+            settings.jwt_private_key_path,  # sera corrigé plus tard
+            algorithms=[settings.jwt_algorithm],
         )
         email = payload.get("sub")
         if not email:

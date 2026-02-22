@@ -178,7 +178,7 @@ class SMSService:
         # ── Step 7: Enqueue Celery task AFTER commit ───────────────────────
         if not self._is_sandbox:
             from app.tasks.sms_tasks import send_sms_task
-            send_sms_task.delay(str(message.id))
+            send_sms_task.delay(str(message.id), message.is_sandbox)
         else:
             sandbox_status = _sandbox_status_for(e164_number)
             await self._repo.update_status(message, sandbox_status)
