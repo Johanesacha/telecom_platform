@@ -303,6 +303,6 @@ class NotificationRepository(BaseRepository[NotificationRecord]):
             NotificationStatus.DELIVERED,
         ):
             from app.utils.time_utils import utcnow
-            fields["sent_at"] = utcnow()
+            fields["sent_at"] = utcnow().replace(tzinfo=None)
 
         return await self.update(instance, **fields)

@@ -120,5 +120,6 @@ class PaymentRepository(BaseRepository[PaymentTransaction]):
         terminal_states = {PaymentStatus.COMPLETED, PaymentStatus.FAILED, PaymentStatus.REVERSED}
         if status in terminal_states:
             from app.utils.time_utils import utcnow
-            fields["completed_at"] = utcnow()
+            fields["completed_at"] = utcnow().replace(tzinfo=None)
+
         return await self.update(instance, **fields)

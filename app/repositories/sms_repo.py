@@ -94,5 +94,6 @@ class SMSRepository(BaseRepository[SMSMessage]):
             fields["error_message"] = error_message
         if status == SMSStatus.DELIVERED:
             from app.utils.time_utils import utcnow
-            fields["delivered_at"] = utcnow()
+            fields["delivered_at"] = utcnow().replace(tzinfo=None)
+
         return await self.update(instance, **fields)

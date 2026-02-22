@@ -114,7 +114,7 @@ class NumberService:
             return cached
 
         # ── Tier 2: Recent DB record check ────────────────────────────────
-        since = utcnow() - timedelta(seconds=_RECENT_WINDOW_SECONDS)
+        since = (utcnow() - timedelta(seconds=_RECENT_WINDOW_SECONDS)).replace(tzinfo=None)
         recent = await self._repo.get_recent_for_msisdn(
             self._app_id, e164, since=since
         )

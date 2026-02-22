@@ -89,7 +89,7 @@ class USSDService:
         """
         session_id = secrets.token_hex(16)
         now = utcnow()
-        expires_at = now + timedelta(seconds=_SESSION_TTL_SECONDS)
+        expires_at = (now + timedelta(seconds=_SESSION_TTL_SECONDS)).replace(tzinfo=None)
 
         initial_state = {
             "session_id": session_id,
@@ -119,7 +119,6 @@ class USSDService:
                 session_data={},
                 state=USSDState.ACTIVE,
                 expires_at=expires_at,
-                request_id=request_id,
                 is_sandbox=self._is_sandbox,
             )
             await self._session.commit()
@@ -163,7 +162,8 @@ class USSDService:
 
         current_state = json.loads(raw_state)
         now = utcnow()
-        new_expires_at = now + timedelta(seconds=_SESSION_TTL_SECONDS)
+        expires_at = (now + timedelta(seconds=_SESSION_TTL_SECONDS)).replace(tzinfo=None)
+        new_expires_at = expires_at
 
         session_data = current_state.get("session_data", {})
         if updated_session_data:

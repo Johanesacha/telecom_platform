@@ -84,4 +84,5 @@ class ApiKeyRepository(BaseRepository[ApiKey]):
     async def update_last_used(self, instance: ApiKey) -> None:
         from app.utils.time_utils import utcnow
 
-        await self.update(instance, last_used_at=utcnow())
+        await self.update(instance, last_used_at=utcnow().replace(tzinfo=None))
+

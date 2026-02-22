@@ -175,4 +175,4 @@ class AuditRepository(BaseRepository[ApiCallLog]):
     @staticmethod
     def _days_ago(days: int) -> datetime:
         from app.utils.time_utils import utcnow
-        return utcnow() - timedelta(days=days)
+        return (utcnow() - timedelta(days=days)).replace(tzinfo=None)
