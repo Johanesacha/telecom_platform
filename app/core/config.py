@@ -49,13 +49,30 @@ class Settings(BaseSettings):
     rate_limit_burst_premium: int = 500
     rate_limit_burst_sandbox: int = 120
 
-    # Quotas
+    # Quotas — SMS
     quota_free_sms: int = 100
-    quota_free_payments: int = 20
     quota_standard_sms: int = 1000
-    quota_standard_payments: int = 200
     quota_premium_sms: int = 10000
+
+    # Quotas — Payments
+    quota_free_payments: int = 20
+    quota_standard_payments: int = 200
     quota_premium_payments: int = 2000
+
+    # Quotas — USSD
+    quota_free_ussd: int = 100
+    quota_standard_ussd: int = 1000
+    quota_premium_ussd: int = 10000
+
+    # Quotas — Numbers
+    quota_free_numbers: int = 500
+    quota_standard_numbers: int = 5000
+    quota_premium_numbers: int = 50000
+
+    # Quotas — Notifications
+    quota_free_notifications: int = 200
+    quota_standard_notifications: int = 2000
+    quota_premium_notifications: int = 20000
 
     # USSD
     ussd_session_ttl_seconds: int = 180
