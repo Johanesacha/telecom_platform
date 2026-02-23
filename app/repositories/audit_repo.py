@@ -130,20 +130,34 @@ class AuditRepository(BaseRepository[ApiCallLog]):
 
     async def get_calls_per_day(self, app_id: UUID, *, days: int = 30, include_sandbox: bool = False) -> list[dict]:
         since = self._days_ago(days)
+        day_trunc = func.date_trunc("day", ApiCallLog.created_at)
+
+        filters = [
+            ApiCallLog.application_id == app_id,
+            ApiCallLog.created_at >= since,
+        ]
+        if not include_sandbox:
+            filters.append(ApiCallLog.is_sandbox.is_(False))
+
         stmt = (
             select(
-                func.date_trunc("day", ApiCallLog.created_at).label("day"),
+                day_trunc.label("day"),
                 func.count().label("call_count"),
                 func.count().filter(ApiCallLog.status_code >= 500).label("error_count"),
             )
-            .where(ApiCallLog.application_id == app_id, ApiCallLog.created_at >= since)
-            .group_by(func.date_trunc("day", ApiCallLog.created_at))
-            .order_by(func.date_trunc("day", ApiCallLog.created_at).asc())
+            .where(*filters)
+            .group_by(day_trunc)
+            .order_by(day_trunc.asc())
         )
-        if not include_sandbox:
-            stmt = stmt.where(ApiCallLog.is_sandbox.is_(False))
         result = await self.session.execute(stmt)
-        return [{"day": row.day.date().isoformat(), "call_count": row.call_count, "error_count": row.error_count} for row in result.all()]
+        return [
+            {
+                "day": row.day.date().isoformat(),
+                "call_count": row.call_count,
+                "error_count": row.error_count,
+            }
+            for row in result.all()
+        ]
 
     async def list_recent(self, *, app_id: UUID | None = None, service_type: str | None = None, status_code_gte: int | None = None, skip: int = 0, limit: int = 50, include_sandbox: bool = False) -> list[ApiCallLog]:
         effective_limit = min(limit, 200)
